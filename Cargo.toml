@@ -4,6 +4,7 @@ version = "0.3.0"
 description = "A GPU-Accelerated ML Library akin to Keras"
 authors = ["Νίκος Μαρουλάκης <nlsnightmare@gmail.com>"]
 edition = "2018"
+license-file = "LICENSE"
 
 [dependencies]
 rand = "0.6"
