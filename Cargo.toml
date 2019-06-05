@@ -1,5 +1,5 @@
 [package]
-name = "mold"
+name = "rail"
 version = "0.3.0"
 authors = ["Νίκος Μαρουλάκης <nlsnightmare@gmail.com>"]
 edition = "2018"
