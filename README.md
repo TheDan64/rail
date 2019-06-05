@@ -10,7 +10,7 @@ so before using RAIL make sure you have arrayfire installed.
 Solving the XOR Problem with Mold is super easy! Simply add the crate to your
 Cargo.toml:
 ```toml
-rail = { git = "https://github.com/nlsnightmare/rail" }
+rail = "0.3.1"
 ```
 Then add this to your code
 ```rust
