@@ -1,6 +1,6 @@
 [package]
 name = "rail"
-version = "0.3.0"
+version = "0.3.1"
 description = "A GPU-Accelerated ML Library akin to Keras"
 authors = ["Νίκος Μαρουλάκης <nlsnightmare@gmail.com>"]
 edition = "2018"
