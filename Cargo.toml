@@ -5,6 +5,7 @@ description = "A GPU-Accelerated ML Library akin to Keras"
 authors = ["Νίκος Μαρουλάκης <nlsnightmare@gmail.com>"]
 edition = "2018"
 license-file = "LICENSE"
+repository = "https://github.com/nlsnightmare/rails"
 
 [dependencies]
 rand = "0.6"
