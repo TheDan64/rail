@@ -1,7 +1,7 @@
 use crate::Matrix;
-pub type LossFuntion = Fn(&Matrix, &Matrix) -> f64;
-pub type DLossFuntion = Fn(&Matrix, &Matrix) -> Matrix;
-pub type LossFuntionGenerator = Fn() -> (Box<LossFuntion>, Box<DLossFuntion>);
+pub type LossFuntion = dyn Fn(&Matrix, &Matrix) -> f64;
+pub type DLossFuntion = dyn Fn(&Matrix, &Matrix) -> Matrix;
+pub type LossFuntionGenerator = dyn Fn() -> (Box<LossFuntion>, Box<DLossFuntion>);
 
 pub fn mean_squared_error() -> (Box<LossFuntion>, Box<DLossFuntion>){
     let mse = |output: &Matrix, expected: &Matrix| {

@@ -3,7 +3,6 @@ use arrayfire::{
     Array,
     MatProp,
     matmul,
-    print_gen
 };
 
 use crate::layers::Layer;
@@ -15,8 +14,8 @@ pub struct Dense {
     biases: Matrix,
     neurons: u64,
     a_function: Activation,
-    activation: Box<Fn(Matrix) -> Matrix>,
-    dactivation: Box<Fn(Matrix) -> Matrix>
+    activation: Box<dyn Fn(Matrix) -> Matrix>,
+    dactivation: Box<dyn Fn(Matrix) -> Matrix>
 }
 
 impl Layer for Dense {
@@ -54,7 +53,7 @@ impl Layer for Dense {
             initialize_weights(self.a_function, inputs as usize, self.neurons as usize);
 
         let new_weights = Array::new(
-            &weight_values, 
+            &weight_values,
             Dim4::new(&[
                 inputs,
                 self.neurons,
@@ -156,7 +155,7 @@ impl Dense {
         use crate::layers::activations::{
             relu, drelu,
             tanh, dtanh,
-            sigmoid, dsigmoid, 
+            sigmoid, dsigmoid,
             softmax, dsoftmax,
         };
 

@@ -2,11 +2,10 @@
 
 use arrayfire::{
     Dim4,
-    convolve2, 
+    convolve2,
     ConvDomain,
     ConvMode,
     randu,
-    print_gen
 };
 
 use crate::layers::Layer;
@@ -20,8 +19,8 @@ pub struct Conv {
     input_shape: Dim4,
     a_function: Activation,
     flatten: bool,
-    activation: Box<Fn(Matrix) -> Matrix>,
-    dactivation: Box<Fn(Matrix) -> Matrix>
+    activation: Box<dyn Fn(Matrix) -> Matrix>,
+    dactivation: Box<dyn Fn(Matrix) -> Matrix>
 }
 
 
@@ -123,7 +122,7 @@ impl Conv {
         Box::new(self)
     }
 
-    pub fn deserialize(src: &[&str]) -> Box<Self> {
+    pub fn deserialize(_src: &[&str]) -> Box<Self> {
         unimplemented!();
         // let size = src[0]
         //     .split(',')
@@ -158,7 +157,7 @@ impl Conv {
         use crate::layers::activations::{
             relu, drelu,
             tanh, dtanh,
-            sigmoid, dsigmoid, 
+            sigmoid, dsigmoid,
             softmax, dsoftmax,
         };
 

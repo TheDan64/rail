@@ -7,7 +7,7 @@ use crate::layers::activations::Activation;
 
 
 // TODO: refactor to const strings from each layer
-pub fn load_layer(src: &[&str]) -> Box<Layer> {
+pub fn load_layer(src: &[&str]) -> Box<dyn Layer> {
     use crate::layers::dense::Dense;
 
     match src[0] {

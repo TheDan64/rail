@@ -1,7 +1,7 @@
 use crate::{ Weight, Matrix };
 use crate::layers::Layer;
 use crate::utils::array_data;
-use crate::functions::loss::{ 
+use crate::functions::loss::{
     LossFuntion,
     DLossFuntion,
     LossFuntionGenerator,
@@ -28,15 +28,15 @@ use std::fmt;
 impl fmt::Debug for ModelError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ModelError::NoLayers => 
+            ModelError::NoLayers =>
                 write!(f, "Model has no Layers!"),
-            ModelError::NoInputShape => 
+            ModelError::NoInputShape =>
                 write!(f, "Model has no Input Shape!"),
-            ModelError::NoOutputShape => 
+            ModelError::NoOutputShape =>
                 write!(f, "Model has no Output Shape!"),
-            ModelError::NoLearningRate => 
+            ModelError::NoLearningRate =>
                 write!(f, "Model has no Learning Rate!"),
-            ModelError::NoLossFuntion => 
+            ModelError::NoLossFuntion =>
                 write!(f, "Model has no Loss Function!"),
         }
     }
@@ -45,7 +45,7 @@ impl fmt::Debug for ModelError {
 pub struct Model {
     input_shape: [u64; 4],
     output_shape: [u64; 4],
-    layers: Vec<Box<Layer>>,
+    layers: Vec<Box<dyn Layer>>,
     loss: Box<LossFuntion>,
     d_loss: Box<DLossFuntion>,
     lr: Weight
@@ -54,14 +54,25 @@ pub struct Model {
 pub struct ModelBuilder {
     input_shape: Option<[u64; 4]>,
     output_shape: Option<[u64; 4]>,
-    layers: Vec<Box<Layer>>,
+    layers: Vec<Box<dyn Layer>>,
     loss: Box<LossFuntion>,
     d_loss: Box<DLossFuntion>,
     lr: Option<Weight>
 }
 
 impl ModelBuilder {
-    pub fn layer(mut self, layer: Box<Layer>) -> Self {
+    pub fn new() -> ModelBuilder {
+        let (loss, d_loss) = mean_squared_error();
+        ModelBuilder {
+            input_shape: None,
+            output_shape: None,
+            loss, d_loss,
+            layers: Vec::new(),
+            lr: None
+        }
+    }
+
+    pub fn layer(mut self, layer: Box<dyn Layer>) -> Self {
         self.layers.push(layer);
         self
     }
@@ -83,16 +94,16 @@ impl ModelBuilder {
         self
     }
     pub fn input_shape(mut self, shape: &[u64; 4]) -> Self {
-        self.input_shape = Some(shape.clone());
+        self.input_shape = Some(*shape);
         self
     }
 
     pub fn output_shape(mut self, shape: &[u64; 4]) -> Self {
-        self.output_shape = Some(shape.clone());
+        self.output_shape = Some(*shape);
         self
     }
 
-    pub fn build(mut self, init: bool) -> Result<Model, ModelError> {
+    pub fn build(self, init: bool) -> Result<Model, ModelError> {
         let input_shape = self.input_shape
             .ok_or(ModelError::NoInputShape)?;
         let output_shape = self.layers
@@ -108,12 +119,12 @@ impl ModelBuilder {
 
         let mut model = Model {
             loss, d_loss,
-            input_shape: input_shape, 
-            output_shape: output_shape, 
+            input_shape,
+            output_shape,
             layers: self.layers,
             lr
         };
-        
+
 
         if init {
             model.initialize_weights();
@@ -124,17 +135,6 @@ impl ModelBuilder {
 }
 
 impl Model {
-    pub fn new() -> ModelBuilder {
-        let (loss, d_loss) = mean_squared_error();
-        ModelBuilder {
-            input_shape: None, 
-            output_shape: None,
-            loss, d_loss,
-            layers: Vec::new(),
-            lr: None
-        }
-    }
-
     pub fn display(&self) {
         for layer in &self.layers {
             layer.display();
@@ -319,14 +319,14 @@ impl Model {
             .map(|v| v.parse::<Weight>().expect("error in line 0"))
             .collect::<Vec<_>>();
 
-        let mut nn = Model::new()
+        let mut nn = ModelBuilder::new()
             .learning_rate(buf[2]);
 
         let mut i = 1;
         while i < lines.len() - 1 {
             let l = load_layer(&lines[i..(i + 6)]);
             nn = nn.layer(l);
-            
+
             i+= 5;
         }
 
@@ -343,7 +343,7 @@ impl Model {
         let mut fd = File::create(filename).expect("unable to create file!");
         let mut buf = String::with_capacity(2000);
 
-        // FIXME: 
+        // FIXME:
         // buf.push_str(&format!("{},{},{}\n", self.inputs, self.outputs, self.lr));
         for layer in &self.layers {
             buf.push_str(&layer.serialize());
