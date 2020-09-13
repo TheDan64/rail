@@ -9,4 +9,4 @@ repository = "https://github.com/nlsnightmare/rails"
 
 [dependencies]
 rand = "0.6"
-arrayfire = "3.6.0"
+arrayfire = "3.7"
