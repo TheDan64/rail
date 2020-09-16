@@ -227,14 +227,13 @@ impl Model {
         }
     }
 
-    pub fn train(&mut self, data: &TrainingData, batch_size: usize, epochs: usize) {
+    pub fn train(&mut self, data: &TrainingData, batch_size: usize, epochs: usize, callback: Option<&dyn Fn(TrainingReport)>) {
         use std::time::Instant;
         use rand::seq::SliceRandom;
         let mut rng = rand::thread_rng();
 
         let mut data = self.batch_data(data.clone(), batch_size);
 
-        println!("training with batch size {} for {} epochs", batch_size, epochs);
         for epoch in 1..epochs+1 {
             let now = Instant::now();
             data.shuffle(&mut rng);
@@ -243,15 +242,16 @@ impl Model {
                 .map(|(inputs, outputs)| self.backpropagate_mat(&inputs, &outputs).abs())
                 .sum::<Weight>() / data.len() as f64;
 
-
-            println!("Epoch {:3}. Avg Error: {:1.4}. Time elapsed: {:.2}s",
-                     epoch, error, now.elapsed().as_millis() as f32 / 1000.0);
+            if let Some(callback) = callback {
+                callback(TrainingReport {
+                    elapsed_time_ms: now.elapsed().as_millis() as f32 / 1000.0,
+                    epoch,
+                    error,
+                });
+            }
 
              arrayfire::device_gc();
         }
-
-
-        println!("done");
     }
 
 
@@ -374,4 +374,10 @@ impl Model {
             input_shape = layer.output_shape();
         }
     }
+}
+
+pub struct TrainingReport {
+    pub epoch: usize,
+    pub elapsed_time_ms: f32,
+    pub error: f64,
 }
