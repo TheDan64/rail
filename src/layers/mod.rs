@@ -1,6 +1,7 @@
 pub mod dense;
 pub mod conv;
 pub mod activations;
+pub mod dropout;
 
 use crate::{ Weight, Matrix };
 use crate::layers::activations::Activation;

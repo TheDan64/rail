@@ -145,7 +145,7 @@ impl Model {
         self.output_shape
     }
 
-    pub fn predict(&self, input: Vec<Weight>) -> Vec<Weight> {
+    pub fn predict(&self, input: &[Weight]) -> Vec<Weight> {
         let amount_per_input = self.input_shape
             .iter()
             .fold(1, |acc, x| acc * x);

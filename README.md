@@ -27,7 +27,7 @@ pub fn main() {
         .build(true)
         .unwrap();
 
-    let tranining_data = vec![
+    let training_data = vec![
         (vec![0., 0.], vec![0.]),
         (vec![0., 1.], vec![1.]),
         (vec![1., 0.], vec![1.]),
@@ -35,12 +35,12 @@ pub fn main() {
     ];
 
     // Train with a batch of 2 for 4000 epochs
-    model.train(&tranining_data, 2, 4000);
+    model.train(&training_data, 2, 4000);
 
-    println!("[0, 0] -> {}", model.predict(vec![0., 0.])[0]); // should be close to 0
-    println!("[0, 1] -> {}", model.predict(vec![0., 1.])[0]); // should be close to 1
-    println!("[1, 0] -> {}", model.predict(vec![1., 0.])[0]); // should be close to 1
-    println!("[1, 1] -> {}", model.predict(vec![1., 1.])[0]); // should be close to 0
+    println!("[0, 0] -> {}", model.predict(&[0., 0.])[0]); // should be close to 0
+    println!("[0, 1] -> {}", model.predict(&[0., 1.])[0]); // should be close to 1
+    println!("[1, 0] -> {}", model.predict(&[1., 0.])[0]); // should be close to 1
+    println!("[1, 1] -> {}", model.predict(&[1., 1.])[0]); // should be close to 0
 }
 ```
 

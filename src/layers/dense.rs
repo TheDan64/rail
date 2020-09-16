@@ -81,7 +81,7 @@ impl Layer for Dense {
 
         let mut buf = String::with_capacity(300);
         let dims = self.weights.dims();
-        buf.push_str(&format!("dense\n"));
+        buf.push_str("dense\n");
         buf.push_str(&format!("{},{}\n", dims[0], dims[1]));
         buf.push_str(&format!("{}\n", self.a_function));
         for w in array_data(self.weights.clone()) {
