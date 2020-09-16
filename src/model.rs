@@ -8,6 +8,9 @@ use crate::functions::loss::{
     mean_squared_error
 };
 
+use std::error::Error;
+use std::fmt::{self, Debug, Display, Formatter};
+
 use arrayfire::{
     Array,
     Dim4,
@@ -23,10 +26,22 @@ pub enum ModelError {
     NoLossFuntion,
 }
 
+impl Debug for ModelError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        match self {
+            ModelError::NoLayers => write!(f, "NoLayers"),
+            ModelError::NoInputShape => write!(f, "NoInputShape"),
+            ModelError::NoOutputShape => write!(f, "NoOutputShape"),
+            ModelError::NoLearningRate => write!(f, "NoLearningRate"),
+            ModelError::NoLossFuntion => write!(f, "NoLossFunction"),
+        }
+    }
+}
 
-use std::fmt;
-impl fmt::Debug for ModelError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+impl Error for ModelError {}
+
+impl Display for ModelError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             ModelError::NoLayers =>
                 write!(f, "Model has no Layers!"),
