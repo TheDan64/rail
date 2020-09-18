@@ -157,6 +157,7 @@ impl Dense {
             tanh, dtanh,
             sigmoid, dsigmoid,
             softmax, dsoftmax,
+            elu, delu,
         };
 
         self.a_function = activation;
@@ -177,7 +178,11 @@ impl Dense {
             Activation::Softmax => {
                 self.activation = Box::new(softmax);
                 self.dactivation = Box::new(dsoftmax);
-            }
+            },
+            Activation::Elu => {
+                self.activation = Box::new(elu);
+                self.dactivation = Box::new(delu);
+            },
         }
 
 

@@ -9,6 +9,8 @@ use std::fmt::{ self, Display };
 #[derive(Copy, Clone)]
 pub enum Activation {
     Relu,
+    /// https://arxiv.org/pdf/1511.07289v5.pdf
+    Elu,
     Tanh,
     Sigmoid,
     Softmax
@@ -18,6 +20,7 @@ impl From<&str> for Activation {
     fn from(src: &str) -> Self {
         match src {
             "Relu"    => Activation::Relu,
+            "Elu"     => Activation::Elu,
             "Tanh"    => Activation::Tanh,
             "Sigmoid" => Activation::Sigmoid,
             "Softmax" => Activation::Softmax,
@@ -30,6 +33,7 @@ impl Display for Activation {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Activation::Relu    => write!(f, "Relu"),
+            Activation::Elu     => write!(f, "Elu"),
             Activation::Tanh    => write!(f, "Tanh"),
             Activation::Sigmoid => write!(f, "Sigmoid"),
             Activation::Softmax => write!(f, "Softmax")
@@ -43,11 +47,12 @@ pub fn initialize_weights(activation: Activation, inputs: usize, neurons: usize)
 
     let c = match activation {
         Activation::Relu => 2.0,
+        Activation::Elu => 2.0,
         Activation::Tanh => 1.0,
         Activation::Sigmoid => 1.0,
         Activation::Softmax => 1.0
     };
-    
+
     let weight_values = (0..inputs * neurons)
         .map(|_| (normal.sample(&mut rng) * c))
         .collect::<Vec<Weight>>();
@@ -69,7 +74,6 @@ pub fn drelu(input: Matrix) -> Matrix {
     let buf = vec![1.0; size as usize];
     Matrix::new(&buf, dims)
 }
-
 
 pub fn tanh(input: Matrix) -> Matrix {
     arrayfire::tanh(&input)
@@ -99,7 +103,27 @@ pub fn dsoftmax(input: Matrix) -> Matrix {
     input
 }
 
+const ELU_ALPHA: f64 = 1.;
 
+fn elu_inner(x: &f64) -> f64 {
+    if *x >= 0. {
+        *x
+    } else {
+        ELU_ALPHA * (x.exp() - 1.)
+    }
+}
+
+pub fn elu(input: Matrix) -> Matrix {
+    map_array(input, elu_inner)
+}
+
+pub fn delu(input: Matrix) -> Matrix {
+    map_array(input, |&x| if x > 0. {
+        1.
+    } else {
+        elu_inner(&x) + ELU_ALPHA
+    })
+}
 
 
 #[cfg(test)]

@@ -159,6 +159,7 @@ impl Conv {
             tanh, dtanh,
             sigmoid, dsigmoid,
             softmax, dsoftmax,
+            elu, delu,
         };
 
         self.a_function = activation;
@@ -179,7 +180,11 @@ impl Conv {
             Activation::Softmax => {
                 self.activation = Box::new(softmax);
                 self.dactivation = Box::new(dsoftmax);
-            }
+            },
+            Activation::Elu => {
+                self.activation = Box::new(elu);
+                self.dactivation = Box::new(delu);
+            },
         }
 
         Box::new(self)
