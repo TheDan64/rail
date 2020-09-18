@@ -112,8 +112,8 @@ impl Layer for Dense {
 impl Dense {
     pub fn new(neurons: u64) -> Box<Self> {
         // temporary weights
-        let weights = Array::new(&[1.0], Dim4::new(&[1,1,1,1]));
-        let biases = Array::new(&[1.0], Dim4::new(&[1,1,1,1]));
+        let weights = Array::new(&[1.0], Dim4::new(&[1, 1, 1, 1]));
+        let biases = Array::new(&[1.0], Dim4::new(&[1, 1, 1, 1]));
 
         use crate::layers::activations::{relu, drelu};
         Box::new(Self { neurons, weights, biases,

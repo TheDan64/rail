@@ -2,6 +2,7 @@
 pub extern crate arrayfire;
 
 mod utils;
+pub mod errors;
 pub mod functions;
 pub mod layers;
 pub mod model;

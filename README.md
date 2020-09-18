@@ -35,7 +35,7 @@ pub fn main() {
     ];
 
     // Train with a batch of 2 for 4000 epochs
-    model.train(&training_data, 2, 4000);
+    model.train(&training_data, 2, 4000, None);
 
     println!("[0, 0] -> {}", model.predict(&[0., 0.])[0]); // should be close to 0
     println!("[0, 1] -> {}", model.predict(&[0., 1.])[0]); // should be close to 1

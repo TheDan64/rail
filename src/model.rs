@@ -250,7 +250,7 @@ impl Model {
                 });
             }
 
-             arrayfire::device_gc();
+            arrayfire::device_gc();
         }
     }
 
@@ -376,6 +376,7 @@ impl Model {
     }
 }
 
+/// Opt-in report provided to the caller every training epoch iteration.
 pub struct TrainingReport {
     pub epoch: usize,
     pub elapsed_time_ms: f32,
